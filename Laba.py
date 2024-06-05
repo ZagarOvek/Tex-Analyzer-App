@@ -4,7 +4,6 @@ import re
 from collections import Counter
 import os
 import pymorphy2
-from datetime import datetime
 
 
 # Singleton Pattern for Logger
@@ -23,9 +22,8 @@ class Logger:
             f.write("Log File Initialized\n")
 
     def log(self, message):
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         with open(self.log_file, 'a') as f:
-            f.write(f"{timestamp} - {message}\n")
+            f.write(message + "\n")
 
 
 logger = Logger()
@@ -143,21 +141,18 @@ class TextAnalysisApp:
         text = self.text_area.get(1.0, tk.END)
         analyzer = TextAnalyzer(AbsoluteFrequencyStrategy())
         result = analyzer.analyze(text)
-        logger.log(f"Absolute Frequency Result: {result}")
         messagebox.showinfo("Absolute Frequency", str(result))
 
     def show_relative_frequency(self):
         text = self.text_area.get(1.0, tk.END)
         analyzer = TextAnalyzer(RelativeFrequencyStrategy())
         result = analyzer.analyze(text)
-        logger.log(f"Relative Frequency Result: {result}")
         messagebox.showinfo("Relative Frequency", str(result))
 
     def show_sentence_count(self):
         text = self.text_area.get(1.0, tk.END)
         analyzer = TextAnalyzer(SentenceCountStrategy())
         result = analyzer.analyze(text)
-        logger.log(f"Sentence Count Result: {result}")
         messagebox.showinfo("Sentence Count", str(result))
 
     def show_inflections(self):
@@ -167,7 +162,6 @@ class TextAnalysisApp:
             text = self.text_area.get(1.0, tk.END)
             analyzer = TextAnalyzer(InflectionHighlightStrategy())
             result = analyzer.analyze(text, selected_words)
-            logger.log(f"Inflections Result for {selected_words}: {result}")
             messagebox.showinfo("Inflections", str(result))
         except tk.TclError:
             messagebox.showerror("Error", "No text selected.")
@@ -176,9 +170,10 @@ class TextAnalysisApp:
         text = self.text_area.get(1.0, tk.END)
         analyzer = TextAnalyzer(UniqueWordsCountStrategy())
         result = analyzer.analyze(text)
-        logger.log(f"Unique Words Count Result: {result}")
         messagebox.showinfo("Unique Words Count", str(result))
 
 
 if __name__ == "__main__":
     root = tk.Tk()
+    app = TextAnalysisApp(root)
+    root.mainloop()
